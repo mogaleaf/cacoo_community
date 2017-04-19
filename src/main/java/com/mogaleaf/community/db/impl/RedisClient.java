@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.mogaleaf.auth.UserToken;
 import com.mogaleaf.community.db.DatabaseService;
 import com.mogaleaf.community.model.Diagram;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.mogaleaf.helper.PropertieHelper;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 
@@ -16,10 +16,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class RedisClient implements DatabaseService {
-
-    @Autowired
-    private com.mogaleaf.community.db.impl.RedisServer server;
-
 
     protected Jedis client;
     protected static String LOGGED_PATTERN = ".logged";
@@ -34,11 +30,9 @@ public class RedisClient implements DatabaseService {
 
     @PostConstruct
     public void start() {
-        if(server.redisServer.isActive()) {
-            client = new Jedis("localhost", 6379);
-            sha1AddDiagram = client.scriptLoad(RedisScript.ADD_DIAGRAM);
-            sha1RateDiagram = client.scriptLoad(RedisScript.RATE_DIAGRAM);
-        }
+        client = new Jedis(PropertieHelper.appProperties.getProperty("redis.ip"), Integer.valueOf(PropertieHelper.appProperties.getProperty("redis.port")));
+        sha1AddDiagram = client.scriptLoad(RedisScript.ADD_DIAGRAM);
+        sha1RateDiagram = client.scriptLoad(RedisScript.RATE_DIAGRAM);
     }
 
     @Override
@@ -83,7 +77,11 @@ public class RedisClient implements DatabaseService {
 
     @Override
     public void addDiagrams(List<Diagram> retrieveDiags) {
-        retrieveDiags.forEach(retrieveDiag -> client.evalsha(sha1AddDiagram, 4, DIAGRAM_KEY, DIAGRAM_RATE_KEY, DIAGRAM_NB_RATE_KEY, DIAGRAM_RECENT_KEY, retrieveDiag.id, gson.toJson(retrieveDiag)));
+        retrieveDiags.forEach(retrieveDiag -> {
+            if (!client.hexists(DIAGRAM_KEY, retrieveDiag.id)) {
+                client.evalsha(sha1AddDiagram, 4, DIAGRAM_KEY, DIAGRAM_RATE_KEY, DIAGRAM_NB_RATE_KEY, DIAGRAM_RECENT_KEY, retrieveDiag.id, gson.toJson(retrieveDiag));
+            }
+        });
     }
 
     @Override

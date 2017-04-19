@@ -1,23 +1,26 @@
 package com.mogaleaf.community.db.impl;
 
-import org.springframework.stereotype.Service;
-import redis.clients.jedis.Jedis;
+import com.mogaleaf.helper.PropertieHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.annotation.PostConstruct;
-import java.io.IOException;
 
-@Service
 public class RedisServer {
     protected redis.embedded.RedisServer redisServer;
-
-    @PostConstruct
+    static Logger logger = LoggerFactory.getLogger(RedisServer.class);
     public void start() {
         try {
-            //TODO filepropertie
-            redisServer = new redis.embedded.RedisServer(6379);
-            redisServer.start();
-        } catch (IOException e) {
-            e.printStackTrace();
+            redisServer = new redis.embedded.RedisServer(Integer.valueOf(PropertieHelper.appProperties.getProperty("redis.port")));
+            if(!redisServer.isActive()) {
+                redisServer.start();
+            }
+        } catch (Exception e) {
+            logger.error("Probleme starting redis server", e);
         }
+    }
+
+
+    public void stop(){
+        redisServer.stop();
     }
 }
