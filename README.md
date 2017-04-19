@@ -26,8 +26,8 @@ ConsumerSecret=To put
 
 **Authorize the application to import your diagrams template :**
 
-**path:** /user/new
-**Params**
+**path:** /user/new  
+**Params**  
 
  Name | Required | Default
  ------------ | ------------- | -------------
@@ -35,8 +35,8 @@ ConsumerSecret=To put
 
 **Import your template diagrams:**
 
-**path:**/user/import
-**Params**
+**path:**/user/import  
+**Params**  
 
  Name | Required | Default
  ------------ | ------------- | -------------
@@ -44,8 +44,8 @@ ConsumerSecret=To put
 
 **Get the 10 most popular Diagrams**
 
-**path:**/api/popular
-**Params**
+**path:**/api/popular  
+**Params**  
 
  Name | Required | Default
  ------------ | ------------- | -------------
@@ -54,8 +54,8 @@ ConsumerSecret=To put
 
 **Get the 10 most recent Diagrams**
 
-**path:**/api/recent
-**Params**
+**path:**/api/recent  
+**Params**  
 
  Name | Required | Default
  ------------ | ------------- | -------------
@@ -63,8 +63,8 @@ ConsumerSecret=To put
 
 **Rate a Diagram**
 
-**path:** /api/rate?DiagId=<diag_id>&score=<int between 0 and 5>
-**Params**
+**path:** /api/rate  
+**Params**  
 
  Name | Required | Default
  ------------ | ------------- | -------------
@@ -74,11 +74,11 @@ ConsumerSecret=To put
 
 ## Stack
 
- * SpringBoot
- * Redis
+ * SpringBoot  
+ * Redis  
  
 ## Next Ideas
 
-* https on the server
-* Add a user sign up pssiblity
-* Possibilty to import a diagram
+* https on the server  
+* Add a user sign up pssiblity  
+* Possibilty to import a diagram  
