@@ -82,6 +82,6 @@ ConsumerSecret=To put
 * https on the server  
 * Add a user sign up pssiblity  
 * Vote allowed only one time per user
-* Having global Vote et per user Vote
+* Having global Vote and per user Vote
 * Machine learning to recommend diag based on vote
 * Possibilty to import a diagram in user account 
