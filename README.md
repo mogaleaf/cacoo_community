@@ -119,11 +119,12 @@ numberOfRate: 0
 
  * SpringBoot  
  * Redis  
- 
+## Next Steps  
+  
+* https on the server  
+
 ## Next Ideas
 
-* https on the server  
-* Add a user sign up pssiblity  
 * Vote allowed only one time per user
 * Having global Vote and per user Vote
 * Machine learning to recommend diag based on vote
