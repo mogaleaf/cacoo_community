@@ -12,8 +12,8 @@ Everybody can see the most recent diagrams.
 
 ## Configuration of the Server
 
-* In src/java/resources Place your *ConsumerKey* and *ConsumerSecret*
-ConsumerKey=To put
+* In src/java/resources Place your *ConsumerKey* and *ConsumerSecret*  
+ConsumerKey=To put  
 ConsumerSecret=To put
 
 * Run mvn clean install
@@ -37,6 +37,7 @@ ConsumerSecret=To put
 
 **path:**/user/import
 **Params**
+
  Name | Required | Default
  ------------ | ------------- | -------------
  email | yes |
@@ -45,6 +46,7 @@ ConsumerSecret=To put
 
 **path:**/api/popular
 **Params**
+
  Name | Required | Default
  ------------ | ------------- | -------------
  max | no | 10
@@ -54,6 +56,7 @@ ConsumerSecret=To put
 
 **path:**/api/recent
 **Params**
+
  Name | Required | Default
  ------------ | ------------- | -------------
  max | no | 10
@@ -62,6 +65,7 @@ ConsumerSecret=To put
 
 **path:** /api/rate?DiagId=<diag_id>&score=<int between 0 and 5>
 **Params**
+
  Name | Required | Default
  ------------ | ------------- | -------------
  DiagId | yes | |
