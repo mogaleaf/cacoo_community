@@ -77,7 +77,7 @@ ConsumerSecret=To put
  * SpringBoot
  * Redis
  
-## Next
+## Next Ideas
 
 * https on the server
 * Add a user sign up pssiblity
