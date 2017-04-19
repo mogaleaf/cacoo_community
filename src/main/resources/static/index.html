@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<body>
+<script type="text/javascript">
+    function getParameterByName(name, url) {
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
+
+    function completeAndRedirect() {
+        var req = 'http://localhost:8080/user/import?sessionId=' + getParameterByName('sessionId', window.location.href);
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("json").innerHTML =
+                        this.responseText;
+            }
+        };
+        xhttp.open("GET", req, true);
+        xhttp.send();
+
+    }
+
+    function recent() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("json").innerHTML =
+                        this.responseText;
+            }
+        };
+        xhttp.open("GET", "http://localhost:8080/api/recent", true);
+        xhttp.send();
+    }
+
+    function popular() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("json").innerHTML =
+                        this.responseText;
+            }
+        };
+        xhttp.open("GET", "http://localhost:8080/api/popular", true);
+        xhttp.send();
+    }
+
+
+
+</script>
+
+<p>
+<a href="http://localhost:8080/signin">Signin</a>
+</p>
+<br/>
+
+
+
+<button type="button" onClick='javascript:completeAndRedirect();'> Import </button>
+
+<br/>
+<br/>
+<p>
+    <a href='javascript:recent();'>Recent</a>
+</p>
+<br/>
+
+<p>
+    <a href='javascript:popular();'>Popular</a>
+</p>
+<br/>
+
+<iframe width="0" height="0" border="0" name="dummyframe" id="dummyframe"></iframe>
+
+<div id="ratediv">
+<form id="rate" action="http://localhost:8080/api/rate" method="post" target="dummyframe">
+    <input type="text" name="score" value="score"/>
+    <input type="text" name="diagId" value="diagId" />
+    <input type="submit"  value="rate"/>
+</form>
+
+</div>
+
+<br/>
+
+<div id="json">
+</div>
+
+</body>
+</html>

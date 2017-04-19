@@ -20,16 +20,16 @@ ConsumerSecret=To put
 
 * run the application with **java -jar cacoo-1.0-SNAPSHOT.jar**
 
-* the application will be up on http port 8080*
+* the application will be up on http port 8080 ( http://localhost:8080 )
 
 ## Authentication
 
 **Signup**  
 
-**path:** /signup  
+**path:** /signin   
 **Return** : a sessionId required to import diagrams.  
 
-## API
+## User API
 
 **Import your template diagrams:**
 
@@ -39,6 +39,8 @@ ConsumerSecret=To put
  Name | Required | Default
  ------------ | ------------- | -------------
  sessionId | yes |
+
+## Public API
 
 **Get the 10 most popular Diagrams**
 
