@@ -57,14 +57,18 @@ public class DiagramsServiceTest {
     }
 
     @Test
-    public void rateTest(){
-        Diagram diag = new Diagram();
-        diag.numberOfRate = 3;
-        diag.rate = 3.0;
-        Mockito.when(database.retrieve("id")).thenReturn(diag);
+    public void rateExistTest(){
+        Mockito.when(database.exist("id")).thenReturn(true);
         instance.rate("id", 5);
-        Mockito.verify(database).update(diag);
-        assertThat(diag.numberOfRate).isEqualTo(4);
-        assertThat(diag.rate).isEqualTo(3.5);
+        Mockito.verify(database).rate("id",5);
+        Mockito.verify(database).exist("id");
+    }
+
+    @Test
+    public void rateNotExistTest(){
+        Mockito.when(database.exist("id")).thenReturn(false);
+        instance.rate("id", 5);
+        Mockito.verify(database,Mockito.never()).rate("id",5);
+        Mockito.verify(database).exist("id");
     }
 }

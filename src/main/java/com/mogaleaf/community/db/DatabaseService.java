@@ -19,7 +19,7 @@ public interface DatabaseService {
 
     List<Diagram> retrieveMostRecent(int i);
 
-    Diagram retrieve(String diagId);
+    void rate(String diagId ,int score);
 
-    void update(Diagram diag);
+    boolean exist(String diagId);
 }

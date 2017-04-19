@@ -87,12 +87,9 @@ public class RedisClientTest {
         retrieveDiags.add(d1);
         retrieveDiags.add(d2);
         instance.addDiagrams(retrieveDiags);
-        Mockito.verify(client).zadd(RedisClient.DIAGRAM_RATE_KEY, 0.0, "1");
-        Mockito.verify(client).zadd(RedisClient.DIAGRAM_RATE_KEY, 0.0, "2");
-        Mockito.verify(client, Mockito.times(1)).lpush(RedisClient.DIAGRAM_RECENT_KEY, "1");
-        Mockito.verify(client, Mockito.times(1)).lpush(RedisClient.DIAGRAM_RECENT_KEY,"2");
-        Mockito.verify(client).hset(RedisClient.DIAGRAM_KEY, "1", parser.toJson(d1));
-        Mockito.verify(client).hset(RedisClient.DIAGRAM_KEY, "2", parser.toJson(d2));
+        Mockito.verify(client).evalsha(null, 4, RedisClient.DIAGRAM_KEY, RedisClient.DIAGRAM_RATE_KEY, RedisClient.DIAGRAM_NB_RATE_KEY, RedisClient.DIAGRAM_RECENT_KEY, d1.id, parser.toJson(d1));
+        Mockito.verify(client).evalsha(null, 4, RedisClient.DIAGRAM_KEY, RedisClient.DIAGRAM_RATE_KEY, RedisClient.DIAGRAM_NB_RATE_KEY, RedisClient.DIAGRAM_RECENT_KEY, d2.id, parser.toJson(d2));
+
 
     }
 
@@ -140,16 +137,5 @@ public class RedisClientTest {
         assertThat(diagrams.get(1).id).isEqualTo("2");
     }
 
-    @Test
-    public void updateTest(){
-        Diagram d1 = new Diagram();
-        d1.id = "1";
-        d1.rate = 3.0;
-        instance.update(d1);
-
-        Mockito.verify(client).hset(RedisClient.DIAGRAM_KEY, "1", parser.toJson(d1));
-        Mockito.verify(client).zadd(RedisClient.DIAGRAM_RATE_KEY, 3.0, "1");
-
-    }
 
 }

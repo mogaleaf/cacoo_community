@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class RedisClient implements DatabaseService {
@@ -21,18 +21,24 @@ public class RedisClient implements DatabaseService {
     private com.mogaleaf.community.db.impl.RedisServer server;
 
 
-
     protected Jedis client;
     protected static String LOGGED_PATTERN = ".logged";
     protected static String CUR_LOG_PATTERN = ".currLog";
     protected static String DIAGRAM_RATE_KEY = "diagrams.rate";
+    protected static String DIAGRAM_NB_RATE_KEY = "diagrams.nb.rate";
     protected static String DIAGRAM_RECENT_KEY = "diagrams.recent";
     protected static String DIAGRAM_KEY = "diagrams";
     private Gson gson = new Gson();
+    private String sha1AddDiagram;
+    private String sha1RateDiagram;
 
     @PostConstruct
     public void start() {
-        client = new Jedis("localhost", 6379);
+        if(server.redisServer.isActive()) {
+            client = new Jedis("localhost", 6379);
+            sha1AddDiagram = client.scriptLoad(RedisScript.ADD_DIAGRAM);
+            sha1RateDiagram = client.scriptLoad(RedisScript.RATE_DIAGRAM);
+        }
     }
 
     @Override
@@ -77,43 +83,40 @@ public class RedisClient implements DatabaseService {
 
     @Override
     public void addDiagrams(List<Diagram> retrieveDiags) {
-        for (Diagram retrieveDiag : retrieveDiags) {
-            client.hset(DIAGRAM_KEY, retrieveDiag.id, gson.toJson(retrieveDiag));
-            client.zadd(DIAGRAM_RATE_KEY, 0, retrieveDiag.id);
-            client.lpush(DIAGRAM_RECENT_KEY, retrieveDiag.id);
-        }
+        retrieveDiags.forEach(retrieveDiag -> client.evalsha(sha1AddDiagram, 4, DIAGRAM_KEY, DIAGRAM_RATE_KEY, DIAGRAM_NB_RATE_KEY, DIAGRAM_RECENT_KEY, retrieveDiag.id, gson.toJson(retrieveDiag)));
     }
 
     @Override
     public List<Diagram> retrieveMostPopular(int i) {
         Set<String> zrevrange = client.zrevrange(DIAGRAM_RATE_KEY, 0, i);
-        List<Diagram> returnList = retriveDiagsFromJson(zrevrange);
-        return returnList;
+        return retriveDiagsFromJson(zrevrange);
     }
 
     @Override
     public List<Diagram> retrieveMostRecent(int i) {
         List<String> lrange = client.lrange(DIAGRAM_RECENT_KEY, 0, i);
-        List<Diagram> returnList = retriveDiagsFromJson(lrange);
-        return returnList;
+        return retriveDiagsFromJson(lrange);
     }
 
     @Override
-    public Diagram retrieve(String diagId) {
-        return gson.fromJson(client.hget(DIAGRAM_KEY, diagId), Diagram.class);
+    public void rate(String diagId, int score) {
+        client.evalsha(sha1RateDiagram, 2, DIAGRAM_NB_RATE_KEY, DIAGRAM_RATE_KEY, diagId, String.valueOf(score));
     }
 
     @Override
-    public void update(Diagram diag) {
-        client.zadd(DIAGRAM_RATE_KEY, diag.rate, diag.id);
-        client.hset(DIAGRAM_KEY, diag.id, gson.toJson(diag));
+    public boolean exist(String diagId) {
+        return client.hexists(DIAGRAM_KEY, diagId);
     }
 
     private List<Diagram> retriveDiagsFromJson(Collection<String> zrevrange) {
-        List<Diagram> returnList = new ArrayList<>();
-        for (String anId : zrevrange) {
-            returnList.add(gson.fromJson(client.hget(DIAGRAM_KEY, anId), Diagram.class));
-        }
-        return returnList;
+        return zrevrange.stream().map(this::retrieveDiag).collect(Collectors.toList());
     }
+
+    private Diagram retrieveDiag(String diagId) {
+        Diagram diagram = gson.fromJson(client.hget(DIAGRAM_KEY, diagId), Diagram.class);
+        diagram.rate = client.zscore(DIAGRAM_RATE_KEY, diagId);
+        diagram.numberOfRate = Integer.valueOf(client.hget(DIAGRAM_NB_RATE_KEY, diagId));
+        return diagram;
+    }
+
 }

@@ -7,13 +7,15 @@ import com.mogaleaf.cacoo.model.Diagrams;
 import com.mogaleaf.cacoo.model.Result;
 import com.mogaleaf.community.db.DatabaseService;
 import com.mogaleaf.community.model.Diagram;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class DiagramsService {
@@ -24,19 +26,19 @@ public class DiagramsService {
     @Autowired
     private RequestService requestService;
 
+    Logger logger = LoggerFactory.getLogger(DiagramsService.class);
+
     @Async
     public void retrieveTemplateDiagrams(String email) throws IOException {
         UserToken token = database.retrieveCredential(email);
         DiagramsBuilder builder = new DiagramsBuilder(requestService.getService(token));
         builder.setType(DiagramsBuilder.Type.template).setLimit(10).setSortOn(DiagramsBuilder.SortOn.updated);
         Diagrams build = builder.build();
-        List<Diagram> retrieveDiags = new ArrayList<>();
-        if (build != null && build.result != null) {
-            for (Result result : build.result) {
-                retrieveDiags.add(buildDiag(result));
-            }
+        if (build != null && build.result != null && !build.result.isEmpty()) {
+            List<Diagram> retrieveDiags = build.result.stream().map(this::buildDiag).collect(Collectors.toList());
+            database.addDiagrams(retrieveDiags);
         }
-        database.addDiagrams(retrieveDiags);
+        logger.debug("[User: {}] diagrams imported",email);
     }
 
     private Diagram buildDiag(Result result) {
@@ -58,10 +60,8 @@ public class DiagramsService {
     }
 
     public void rate(String diagId, int scoreInt) {
-        //TODO Add a redis script to calc the new rate and update it so we dont have sync issue
-        Diagram diag = database.retrieve(diagId);
-        diag.rate = (diag.rate * diag.numberOfRate + scoreInt) / (diag.numberOfRate + 1);
-        diag.numberOfRate = diag.numberOfRate + 1;
-        database.update(diag);
+        if (database.exist(diagId)) {
+            database.rate(diagId, scoreInt);
+        }
     }
 }
