@@ -1,6 +1,6 @@
 # cacoo_community
 
-[![Build Status](https://travis-ci.org/mogaleaf/cacoo_community.svg?branch=master)]
+[![Build Status](https://travis-ci.org/travis-ci/docs-travis-ci-com.svg?branch=master)](https://travis-ci.org/travis-ci/docs-travis-ci-com)
 
 
 ## Configuration of the Server
