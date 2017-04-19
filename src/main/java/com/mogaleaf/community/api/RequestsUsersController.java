@@ -22,7 +22,7 @@ public class RequestsUsersController {
     @Autowired
     private DiagramsService diagramsService;
 
-    Logger logger = LoggerFactory.getLogger(RequestsUsersController.class);
+    static Logger logger = LoggerFactory.getLogger(RequestsUsersController.class);
 
 
     @RequestMapping("/user/new")
@@ -32,8 +32,6 @@ public class RequestsUsersController {
             if (!tokenService.loggedUser(email)) {
                 String baseUrl = String.format("%s://%s:%d/user/callback",request.getScheme(),  request.getServerName(), request.getServerPort());
                 response.sendRedirect(tokenService.getAuthentificationUrl(email,baseUrl + "?email="+email));
-            } else {
-                //TODO
             }
         } catch (IOException e) {
             logger.error("Problem with new user ",e);
@@ -41,25 +39,25 @@ public class RequestsUsersController {
     }
 
     @RequestMapping("/user/callback")
-    public void callBack(@RequestParam("email") String email, @RequestParam("oauth_verifier") String verifier) {
+    public String callBack(@RequestParam("email") String email, @RequestParam("oauth_verifier") String verifier) {
         logger.debug("[User: {}] accepted authorisation",email);
         try {
             if (tokenService.currentLoggingUser(email)) {
-
                 tokenService.requestAndRegisterToken(email,verifier);
             } else if(tokenService.loggedUser(email)){
-                //TODO
+                return "User " + email + " Logged.";
             }
             else{
-                //TODO
+                return "User " + email + " fail to Logged.";
             }
         } catch (IOException e) {
             logger.error("Problem with callBack user ",e);
         }
+        return "User " + email + " Logged.";
     }
 
     @RequestMapping("/user/import")
-    public void importDiagrams(HttpServletRequest request,HttpServletResponse response,@RequestParam("email") String email) {
+    public String importDiagrams(HttpServletRequest request,HttpServletResponse response,@RequestParam("email") String email) {
         logger.debug("[User: {}] import diagrams",email);
         try {
             if (!tokenService.loggedUser(email)) {
@@ -71,6 +69,7 @@ public class RequestsUsersController {
         } catch (IOException e) {
             logger.error("Problem with importDiagrams user ",e);
         }
+        return "User " + email + " imported.";
     }
 
 }

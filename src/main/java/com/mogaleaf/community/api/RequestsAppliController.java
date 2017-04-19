@@ -19,15 +19,15 @@ public class RequestsAppliController {
     @Autowired
     DiagramsService diagramsService;
 
-    Logger logger = LoggerFactory.getLogger(RequestsAppliController.class);
+    static Logger logger = LoggerFactory.getLogger(RequestsAppliController.class);
 
     @RequestMapping("/api/rate")
     public void rate(@RequestParam("diagId") String diagId, @RequestParam(value = "score", defaultValue = "0") String score) {
-        logger.debug("Rate DiagId: {} with score: {}",diagId,score);
-        int scoreInt =  Integer.valueOf(score);
-        if(scoreInt > 5){
+        logger.debug("Rate DiagId: {} with score: {}", diagId, score);
+        int scoreInt = Integer.valueOf(score);
+        if (scoreInt > 5) {
             scoreInt = 5;
-        } else if(scoreInt < 0){
+        } else if (scoreInt < 0) {
             scoreInt = 0;
         }
         diagramsService.rate(diagId, scoreInt);
@@ -35,18 +35,38 @@ public class RequestsAppliController {
 
 
     @RequestMapping("/api/popular")
-    public
     @ResponseBody
-    List<Diagram> popular() {
-        return diagramsService.retrieveMostPopular(10);
+    public List<Diagram> popular(@RequestParam(value = "max" , defaultValue = "10") String max) {
+        Integer maxInt;
+        try {
+            maxInt = Integer.parseInt(max);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("max is not an Integer");
+        }
+        try {
+            return diagramsService.retrieveMostPopular(maxInt);
+        } catch (Exception e) {
+            logger.error("Problem during popular retrieving", e);
+            throw new RuntimeException("Problem during popular retrieving");
+        }
     }
 
 
     @RequestMapping("/api/recent")
-    public
     @ResponseBody
-    List<Diagram> recent() {
-        return diagramsService.retrieveMostRecent(10);
+    public List<Diagram> recent(@RequestParam(value = "max", defaultValue = "10") String max) {
+        Integer maxInt;
+        try {
+            maxInt = Integer.parseInt(max);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("max is not an Integer");
+        }
+        try {
+            return diagramsService.retrieveMostRecent(maxInt);
+        } catch (Exception e) {
+            logger.error("Problem during recent retrieving", e);
+            throw new RuntimeException("Problem during recent retrieving");
+        }
     }
 
 
