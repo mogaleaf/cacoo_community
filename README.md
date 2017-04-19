@@ -6,7 +6,7 @@
 
 This application is a backend server to rate template diagrams coming from *cacoo* users.
 
-The user can import is diagrams into the application.
+The user can import his diagrams into the application.
 Everybody can rate a diagram.
 Everybody can see the most recent diagrams.
 
@@ -76,3 +76,9 @@ ConsumerSecret=To put
 
  * SpringBoot
  * Redis
+ 
+## Next
+
+* https on the server
+* Add a user sign up pssiblity
+* Possibilty to import a diagram
