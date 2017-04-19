@@ -5,6 +5,8 @@ import com.mogaleaf.community.api.service.DiagramsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,6 +30,9 @@ public class RequestsImportController {
     @RequestMapping("/user/import")
     public String importDiagrams(HttpServletRequest request, HttpServletResponse response, @RequestParam("sessionId") String sessionId) {
         logger.debug("[User import]");
+        if(sessionId == null || sessionId.isEmpty()){
+            throw new IllegalArgumentException("sessionId not present, please log fisrt");
+        }
         try {
             if (!tokenService.loggedUser(sessionId)) {
                 String baseUrl = String.format("%s://%s:%d/signup/new", request.getScheme(), request.getServerName(), request.getServerPort());
@@ -41,4 +46,8 @@ public class RequestsImportController {
         return "Imported.";
     }
 
+    @ExceptionHandler
+    void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
+        response.sendError(HttpStatus.BAD_REQUEST.value(),e.getMessage());
+    }
 }

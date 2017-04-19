@@ -13,16 +13,25 @@
     }
 
     function completeAndRedirect() {
-        var req = 'http://localhost:8080/user/import?sessionId=' + getParameterByName('sessionId', window.location.href);
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-                document.getElementById("json").innerHTML =
-                        this.responseText;
-            }
-        };
-        xhttp.open("GET", req, true);
-        xhttp.send();
+        var result = getParameterByName('sessionId', window.location.href);
+        if(result){
+            var req = 'http://localhost:8080/user/import?sessionId=' + getParameterByName('sessionId', window.location.href);
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("json").innerHTML =
+                            this.responseText;
+                }
+            };
+            xhttp.open("GET", req, true);
+            xhttp.send();
+        }
+        else{
+            document.getElementById("json").innerHTML =
+                    "no SessionId, Click Signin first";
+        }
+
+
 
     }
 
@@ -59,9 +68,7 @@
 </p>
 <br/>
 
-
-
-<button type="button" onClick='javascript:completeAndRedirect();'> Import </button>
+<a href='javascript:completeAndRedirect();'>Import</a>
 
 <br/>
 <br/>

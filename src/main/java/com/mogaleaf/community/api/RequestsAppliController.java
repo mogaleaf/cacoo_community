@@ -5,11 +5,11 @@ import com.mogaleaf.community.model.Diagram;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 
@@ -23,6 +23,9 @@ public class RequestsAppliController {
 
     @RequestMapping("/api/rate")
     public void rate(@RequestParam("diagId") String diagId, @RequestParam(value = "score", defaultValue = "0") String score) {
+        if(diagId == null || diagId.isEmpty()){
+            throw new IllegalArgumentException("DiagId not present");
+        }
         logger.debug("Rate DiagId: {} with score: {}", diagId, score);
         int scoreInt = Integer.valueOf(score);
         if (scoreInt > 5) {
@@ -69,5 +72,11 @@ public class RequestsAppliController {
         }
     }
 
+
+
+    @ExceptionHandler
+    void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
+        response.sendError(HttpStatus.BAD_REQUEST.value(),e.getMessage());
+    }
 
 }
