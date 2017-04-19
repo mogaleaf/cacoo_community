@@ -18,7 +18,7 @@ ConsumerSecret=To put
 
 * Run mvn clean install
 
-* run the application with java -jar cacoo-1.0-SNAPSHOT.jar
+* run the application with **java -jar cacoo-1.0-SNAPSHOT.jar**
 
 * the application will be up on http port 8080
 
