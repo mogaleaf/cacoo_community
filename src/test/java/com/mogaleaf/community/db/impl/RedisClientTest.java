@@ -107,6 +107,11 @@ public class RedisClientTest {
         Mockito.when(client.zrevrange(RedisClient.DIAGRAM_RATE_KEY,0,2)).thenReturn(retrieveDiags);
         Mockito.when(client.hget(RedisClient.DIAGRAM_KEY, "1")).thenReturn(parser.toJson(d1));
         Mockito.when(client.hget(RedisClient.DIAGRAM_KEY, "2")).thenReturn(parser.toJson(d2));
+        Mockito.when(client.hget(RedisClient.DIAGRAM_NB_RATE_KEY, "1")).thenReturn("0");
+        Mockito.when(client.hget(RedisClient.DIAGRAM_NB_RATE_KEY, "2")).thenReturn("0");
+        Mockito.when(client.zscore(RedisClient.DIAGRAM_RATE_KEY, "2")).thenReturn(0.0);
+        Mockito.when(client.zscore(RedisClient.DIAGRAM_RATE_KEY, "1")).thenReturn(0.0);
+
 
         List<Diagram> diagrams = instance.retrieveMostPopular(2);
 
@@ -129,6 +134,11 @@ public class RedisClientTest {
         Mockito.when(client.lrange(RedisClient.DIAGRAM_RECENT_KEY, 0, 2)).thenReturn(retrieveDiags);
         Mockito.when(client.hget(RedisClient.DIAGRAM_KEY, "1")).thenReturn(parser.toJson(d1));
         Mockito.when(client.hget(RedisClient.DIAGRAM_KEY, "2")).thenReturn(parser.toJson(d2));
+        Mockito.when(client.hget(RedisClient.DIAGRAM_NB_RATE_KEY, "1")).thenReturn("0");
+        Mockito.when(client.hget(RedisClient.DIAGRAM_NB_RATE_KEY, "2")).thenReturn("0");
+        Mockito.when(client.zscore(RedisClient.DIAGRAM_RATE_KEY, "2")).thenReturn(0.0);
+        Mockito.when(client.zscore(RedisClient.DIAGRAM_RATE_KEY, "1")).thenReturn(0.0);
+
 
         List<Diagram> diagrams = instance.retrieveMostRecent(2);
 
