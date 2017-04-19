@@ -31,21 +31,22 @@ public class TokenServiceTest {
     @Test
     public void getAuthentificationUrlTest() throws IOException {
         UserToken fakeUserToken = new UserToken();
-        Mockito.when(oAuthService.retrieveTempToken("https://cacoo.com/oauth/request_token","http://localhost:8080/user/callback?email=test")).thenReturn(fakeUserToken);
+        fakeUserToken.token = "token";
+        Mockito.when(oAuthService.retrieveTempToken("https://cacoo.com/oauth/request_token","http://localhost:8080/signup/callback")).thenReturn(fakeUserToken);
         Mockito.when(oAuthService.retrieveAuthorizeUrl("https://cacoo.com/oauth/authorize", fakeUserToken)).thenReturn("http://mock/auth/test");
-        String test = testInstance.getAuthentificationUrl("test","http://localhost:8080/user/callback?email=test");
+        String test = testInstance.getAuthentificationUrl("http://localhost:8080/signup/callback");
         assertThat(test).isEqualTo("http://mock/auth/test");
-        Mockito.verify(databaseService).registerCredential("test", fakeUserToken);
+        Mockito.verify(databaseService).registerCredential(fakeUserToken.token , fakeUserToken);
     }
 
     @Test
     public void requestAndRegisterTokenTest() throws IOException {
         UserToken fakeUserToken = new UserToken();
-        Mockito.when(databaseService.retrieveCredential("test")).thenReturn(fakeUserToken);
+        Mockito.when(databaseService.retrieveCredential(fakeUserToken.token)).thenReturn(fakeUserToken);
         UserToken secondFakeUserToken = new UserToken();
         Mockito.when(oAuthService.retrieveToken("https://cacoo.com/oauth/access_token",fakeUserToken,"verif")).thenReturn(secondFakeUserToken);
-        testInstance.requestAndRegisterToken("test", "verif");
-        Mockito.verify(databaseService).retrieveCredential("test");
-        Mockito.verify(databaseService).registerCredential("test", secondFakeUserToken);
+        String id = testInstance.requestAndRegisterToken(fakeUserToken.token, "verif");
+        Mockito.verify(databaseService).retrieveCredential(fakeUserToken.token );
+        Mockito.verify(databaseService).registerCredential(id, secondFakeUserToken);
     }
 }

@@ -20,18 +20,16 @@ ConsumerSecret=To put
 
 * run the application with **java -jar cacoo-1.0-SNAPSHOT.jar**
 
-* the application will be up on http port 8080
+* the application will be up on http port 8080*
+
+## Authentication
+
+**Signup**  
+
+**path:** /signup  
+**Return** : a sessionId required to import diagrams.  
 
 ## API
-
-**Authorize the application to import your diagrams template :**
-
-**path:** /user/new  
-**Params**  
-
- Name | Required | Default
- ------------ | ------------- | -------------
- email | yes |
 
 **Import your template diagrams:**
 
@@ -40,7 +38,7 @@ ConsumerSecret=To put
 
  Name | Required | Default
  ------------ | ------------- | -------------
- email | yes |
+ sessionId | yes |
 
 **Get the 10 most popular Diagrams**
 
@@ -51,6 +49,26 @@ ConsumerSecret=To put
  ------------ | ------------- | -------------
  max | no | 10
 
+**Return**  
+Json format of diagram  
+```
+[
+{
+name: "elec",
+id: "m2D4SThi4NeZEeQA",
+imageUrl: "https://cacoo.com/diagrams/m2D4SThi4NeZEeQA.png",
+rate: 5,
+numberOfRate: 1
+},
+{
+name: "test",
+id: "LZWPrWaUeBewflTT",
+imageUrl: "https://cacoo.com/diagrams/LZWPrWaUeBewflTT.png",
+rate: 0,
+numberOfRate: 0
+}
+]
+```
 
 **Get the 10 most recent Diagrams**
 
@@ -59,7 +77,30 @@ ConsumerSecret=To put
 
  Name | Required | Default
  ------------ | ------------- | -------------
- max | no | 10
+ max | no | 10  
+ 
+ **Return**  
+   
+Json format of diagram  
+```
+[
+{
+name: "elec",
+id: "m2D4SThi4NeZEeQA",
+imageUrl: "https://cacoo.com/diagrams/m2D4SThi4NeZEeQA.png",
+rate: 5,
+numberOfRate: 1
+},
+{
+name: "test",
+id: "LZWPrWaUeBewflTT",
+imageUrl: "https://cacoo.com/diagrams/LZWPrWaUeBewflTT.png",
+rate: 0,
+numberOfRate: 0
+}
+]
+```
+
 
 **Rate a Diagram**
 

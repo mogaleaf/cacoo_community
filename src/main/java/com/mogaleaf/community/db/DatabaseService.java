@@ -8,10 +8,10 @@ import java.util.List;
 
 public interface DatabaseService {
 
-    void registerCredential(String email,UserToken userToken) ;
-    UserToken retrieveCredential(String email) ;
-    boolean logUser(String email);
-    boolean curLogUser(String email);
+    void registerCredential(String name,UserToken userToken) ;
+    UserToken retrieveCredential(String name) ;
+    boolean logUser(String name);
+    boolean curLogUser(String name);
 
     void addDiagrams(List<Diagram> retrieveDiags);
 

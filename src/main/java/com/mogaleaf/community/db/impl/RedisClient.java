@@ -36,14 +36,14 @@ public class RedisClient implements DatabaseService {
     }
 
     @Override
-    public void registerCredential(String email, UserToken userToken) {
+    public void registerCredential(String name, UserToken userToken) {
         String key;
         int time;
         if (userToken.tempToken) {
-            key = email + CUR_LOG_PATTERN;
+            key = name + CUR_LOG_PATTERN;
             time = 60 * 2;
         } else {
-            key = email + LOGGED_PATTERN;
+            key = name + LOGGED_PATTERN;
             time = 60 * 60 * 24 * 2;
         }
         client.set(key, gson.toJson(userToken));
@@ -52,12 +52,12 @@ public class RedisClient implements DatabaseService {
     }
 
     @Override
-    public UserToken retrieveCredential(String email) {
+    public UserToken retrieveCredential(String name) {
         String tokenString = null;
-        if (client.exists(email + LOGGED_PATTERN)) {
-            tokenString = client.get(email + LOGGED_PATTERN);
-        } else if (client.exists(email + CUR_LOG_PATTERN)) {
-            tokenString = client.get(email + CUR_LOG_PATTERN);
+        if (client.exists(name + LOGGED_PATTERN)) {
+            tokenString = client.get(name + LOGGED_PATTERN);
+        } else if (client.exists(name + CUR_LOG_PATTERN)) {
+            tokenString = client.get(name + CUR_LOG_PATTERN);
         }
         if (tokenString != null) {
             return gson.fromJson(tokenString, UserToken.class);
@@ -66,13 +66,13 @@ public class RedisClient implements DatabaseService {
     }
 
     @Override
-    public boolean logUser(String email) {
-        return client.exists(email + LOGGED_PATTERN);
+    public boolean logUser(String name) {
+        return client.exists(name + LOGGED_PATTERN);
     }
 
     @Override
-    public boolean curLogUser(String email) {
-        return client.exists(email + CUR_LOG_PATTERN);
+    public boolean curLogUser(String name) {
+        return client.exists(name + CUR_LOG_PATTERN);
     }
 
     @Override
