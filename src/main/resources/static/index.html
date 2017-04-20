@@ -1,7 +1,46 @@
 <!DOCTYPE html>
 <html>
-<body>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cacoo Community</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+    <style type="text/css">
+        .thumbnail {
+            width: 300px;
+        / / or you could use percentage values for responsive layout / / width : 100 %;
+            height: 300px;
+            overflow: auto;
+        }
+    </style>
+</head>
+<body onload="javascript:checkCookie();">
+
 <script type="text/javascript">
+
+
+    function checkCookie() {
+        var myCookie = document.cookie.indexOf('sessionId=');
+
+        if (myCookie != -1) {
+
+                document.getElementById("cookie").innerHTML = "<a  class=\"btn btn-primary\" href='javascript:completeAndRedirect();'>Import</a>";
+            }
+        else
+            {
+                document.getElementById("cookie").innerHTML = "<a  class=\"btn btn-primary disabled\" href='javascript:completeAndRedirect();'>Import</a>";
+            }
+    }
+
     function getParameterByName(name, url) {
         if (!url) url = window.location.href;
         name = name.replace(/[\[\]]/g, "\\$&");
@@ -14,37 +53,74 @@
 
     function completeAndRedirect() {
 
-            var req = 'http://localhost:8080/user/import';
-            var xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
-                    document.getElementById("json").innerHTML =
-                            this.responseText;
-                }
-            };
-            xhttp.open("GET", req, true);
-            xhttp.send();
+        var req = 'http://localhost:8080/user/import';
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
 
+
+                document.getElementById("json").innerHTML =
+                        this.responseText;
+            }
+        };
+        xhttp.open("GET", req, true);
+        xhttp.send();
+
+    }
+
+    function retrieveHtml(parsedJSON) {
+        var text = "<div class=\"container-fluid\"><div style=\"float:left;\" class=\"row\">";
+        var url = "/api/rate?";
+        for (var i = 0; i < parsedJSON.length; i++) {
+            text +=
+                    "<div class=\"col-xs-6\"> <div class=\"thumbnail\">"
+                    + "<img src=\"" + parsedJSON[i].imageUrl + "\" class=\"img-thumbnail\" > <div class=\"caption\">  " +
+                    "<div class=\"rating\">";
+            for (var j = 0; j < parsedJSON[i].rate; j++) {
+                text += "<span class=\"glyphicon glyphicon-star\"></span>";
+            }
+            text += "</div><div class=\"rating-api\">";
+            for (var j = 0; j < 5; j++) {
+                text += "<a href=\"javascript:rate('" + parsedJSON[i].id + "','" + (j + 1) + "');\">";
+                text += "<span class=\"glyphicon glyphicon-star-empty\"></span>";
+                text += "</a>";
+            }
+            text += "</div></div></div></div>";
+        }
+        text += "</div></div>";
+        return text;
     }
 
     function recent() {
         var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function() {
+        xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                document.getElementById("json").innerHTML =
-                        this.responseText;
+                var parsedJSON = JSON.parse(this.responseText);
+                document.getElementById("json").innerHTML = retrieveHtml(parsedJSON);
             }
         };
         xhttp.open("GET", "http://localhost:8080/api/recent", true);
         xhttp.send();
     }
 
+    function rate(id, score) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("result").innerHTML =
+                        "diag " + id + " rated with score " + score;
+            }
+        };
+        xhttp.open("GET", "http://localhost:8080/api/rate?diagId=" + id + "&score=" + score, true);
+        xhttp.send();
+    }
+
     function popular() {
         var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function() {
+        xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                document.getElementById("json").innerHTML =
-                        this.responseText;
+                var parsedJSON = JSON.parse(this.responseText);
+                document.getElementById("json").innerHTML = retrieveHtml(parsedJSON);
             }
         };
         xhttp.open("GET", "http://localhost:8080/api/popular", true);
@@ -52,40 +128,26 @@
     }
 
 
-
 </script>
-
-<p>
-<a href="http://localhost:8080/signin">Signin</a>
-</p>
-<br/>
-
-<a href='javascript:completeAndRedirect();'>Import</a>
-
-<br/>
-<br/>
-<p>
-    <a href='javascript:recent();'>Recent</a>
-</p>
-<br/>
-
-<p>
-    <a href='javascript:popular();'>Popular</a>
-</p>
-<br/>
-
-<iframe width="0" height="0" border="0" name="dummyframe" id="dummyframe"></iframe>
-
-<div id="ratediv">
-<form id="rate" action="http://localhost:8080/api/rate" method="post" target="dummyframe">
-    <input type="text" name="score" value="score"/>
-    <input type="text" name="diagId" value="diagId" />
-    <input type="submit"  value="rate"/>
-</form>
-
+<div class="container">
+    <div class="row">
+        <div class="btn-toolbar">
+            <div class="btn-group">
+                <div class="col-md-4"><a class="btn btn-primary" href="http://localhost:8080/signin">Signin</a></div>
+                <div class="col-md-4" id="cookie"></div>
+            </div>
+            <div class="row">
+                <div class="btn-group">
+                    <div class="col-md-4"><a class="btn btn-primary" href='javascript:recent();'>Recent</a></div>
+                    <div class="col-md-4"><a class="btn btn-primary" href='javascript:popular();'>Popular</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="result">
+        <div class="col-md-4"></div>
+    </div>
 </div>
-
-<br/>
 
 <div id="json">
 </div>
