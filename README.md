@@ -10,6 +10,10 @@ The user can import his diagrams into the application.
 Everybody can rate a diagram.
 Everybody can see the most recent diagrams.
 
+## Try It  
+
+Test the deployed version on Heroku [ here ](https://safe-mesa-68420.herokuapp.com/)
+
 ## Configuration of the Server
 
 * In src/java/resources Place your *ConsumerKey* and *ConsumerSecret*  
@@ -117,8 +121,12 @@ numberOfRate: 0
 
 ## Stack
 
+ * Java 8
  * SpringBoot  
  * Redis  
+ * Bootstrap
+ * Javascript
+ 
 ## Next Steps  
   
 * https on the server  
