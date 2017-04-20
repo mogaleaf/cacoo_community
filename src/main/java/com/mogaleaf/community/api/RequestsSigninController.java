@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -42,7 +42,11 @@ public class RequestsSigninController {
             if (tokenService.currentLoggingUser(oauth_token)) {
                 String sessionId = tokenService.requestAndRegisterToken(oauth_token, verifier);
                 String baseUrl = String.format("%s://%s:%d", request.getScheme(), request.getServerName(), request.getServerPort());
-                response.sendRedirect(baseUrl + "?sessionId=" + sessionId);
+                Cookie sessionId1 = new Cookie("sessionId", sessionId);
+                sessionId1.setMaxAge(60*60);
+                sessionId1.setPath("/");
+                response.addCookie(sessionId1);
+                response.sendRedirect(baseUrl);
                 return sessionId;
 
             } else {

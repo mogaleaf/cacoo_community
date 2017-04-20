@@ -6,10 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,13 +25,13 @@ public class RequestsImportController {
 
 
     @RequestMapping("/user/import")
-    public String importDiagrams(HttpServletRequest request, HttpServletResponse response, @RequestParam("sessionId") String sessionId) {
+    public String importDiagrams(HttpServletRequest request, HttpServletResponse response, @CookieValue(value = "sessionId" ,defaultValue = "none") String sessionId) {
         logger.debug("[User import]");
-        if(sessionId == null || sessionId.isEmpty()){
+        if(sessionId == null || sessionId.isEmpty() ){
             throw new IllegalArgumentException("sessionId not present, please log fisrt");
         }
         try {
-            if (!tokenService.loggedUser(sessionId)) {
+            if (sessionId.equals("none") || !tokenService.loggedUser(sessionId)) {
                 String baseUrl = String.format("%s://%s:%d/signup/new", request.getScheme(), request.getServerName(), request.getServerPort());
                 response.sendRedirect(baseUrl);
             } else {

@@ -13,9 +13,8 @@
     }
 
     function completeAndRedirect() {
-        var result = getParameterByName('sessionId', window.location.href);
-        if(result){
-            var req = 'http://localhost:8080/user/import?sessionId=' + getParameterByName('sessionId', window.location.href);
+
+            var req = 'http://localhost:8080/user/import';
             var xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
@@ -25,13 +24,6 @@
             };
             xhttp.open("GET", req, true);
             xhttp.send();
-        }
-        else{
-            document.getElementById("json").innerHTML =
-                    "no SessionId, Click Signin first";
-        }
-
-
 
     }
 
