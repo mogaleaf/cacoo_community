@@ -29,7 +29,7 @@ public class DiagramsService {
     Logger logger = LoggerFactory.getLogger(DiagramsService.class);
 
     @Async
-    public void retrieveTemplateDiagrams(String email) throws IOException {
+    public void retrieveTemplateDiagrams(String email) throws Exception {
         UserToken token = database.retrieveCredential(email);
         DiagramsBuilder builder = new DiagramsBuilder(requestService.getService(token));
         builder.setType(DiagramsBuilder.Type.template).setLimit(10).setSortOn(DiagramsBuilder.SortOn.updated);

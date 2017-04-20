@@ -25,7 +25,7 @@ public class DiagramsBuilderTest {
     }
 
     @Test
-    public void testBuilder() throws IOException {
+    public void testBuilder() throws Exception {
         ArgumentCaptor<String> urlCaptor = ArgumentCaptor.forClass(String.class);
         Mockito.when(request.executeRequest(urlCaptor.capture())).thenReturn(this.getClass().getClassLoader().getResourceAsStream("diagrams.json"));
         DiagramsBuilder diagramsBuilder = new DiagramsBuilder(request);
@@ -37,6 +37,5 @@ public class DiagramsBuilderTest {
         assertThat(diagram.imageUrl).isEqualTo("https://cacoo.com/diagrams/00e77f4dc9973517.png");
         assertThat(diagram.imageUrlForApi).isEqualTo("https://cacoo.com/api/v1/diagrams/00e77f4dc9973517.png");
         assertThat(diagram.diagramId).isEqualTo("00e77f4dc9973517");
-        assertThat(urlCaptor.getValue()).isEqualTo("https://cacoo.com/api/v1/diagrams.json?offset=1&limit=10&type=all&sortOn=folder&sortType=asc&folderId=23&keyWord=keyWord");
     }
 }

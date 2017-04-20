@@ -36,7 +36,7 @@ public class DiagramsServiceTest {
     }
 
     @Test
-    public void retrieveTemplateDiagramsTest() throws IOException {
+    public void retrieveTemplateDiagramsTest() throws  Exception {
         UserToken falseToken = new UserToken();
         Mockito.when(database.retrieveCredential("email")).thenReturn(falseToken);
         Mockito.when(requestService.getService(falseToken)).thenReturn(requestExecutor);

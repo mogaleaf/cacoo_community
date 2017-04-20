@@ -40,7 +40,7 @@ public class RequestsImportController {
             } else {
                 diagramsService.retrieveTemplateDiagrams(sessionId);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error("Problem with importDiagrams user ", e);
         }
         return "Imported.";
