@@ -15,30 +15,24 @@
             integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
             crossorigin="anonymous"></script>
     <style type="text/css">
-        .thumbnail {
-            width: 300px;
-        / / or you could use percentage values for responsive layout / / width : 100 %;
-            height: 300px;
-            overflow: auto;
-        }
+
     </style>
 </head>
 <body onload="javascript:checkCookie();">
 
 <script type="text/javascript">
-
+    var recentPopularOrNone = "none";
 
     function checkCookie() {
         var myCookie = document.cookie.indexOf('sessionId=');
 
         if (myCookie != -1) {
 
-                document.getElementById("cookie").innerHTML = "<a  class=\"btn btn-primary\" href='javascript:completeAndRedirect();'>Import</a>";
-            }
-        else
-            {
-                document.getElementById("cookie").innerHTML = "<a  class=\"btn btn-primary disabled\" href='javascript:completeAndRedirect();'>Import</a>";
-            }
+            document.getElementById("cookie").innerHTML = "<a  class=\"btn btn-primary\" href='javascript:completeAndRedirect();'>Import</a>";
+        }
+        else {
+            document.getElementById("cookie").innerHTML = "<a  class=\"btn btn-primary disabled\" href='javascript:completeAndRedirect();'>Import</a>";
+        }
     }
 
     function getParameterByName(name, url) {
@@ -59,7 +53,7 @@
             if (this.readyState == 4 && this.status == 200) {
 
 
-                document.getElementById("json").innerHTML =
+                document.getElementById("result").innerHTML =
                         this.responseText;
             }
         };
@@ -69,15 +63,19 @@
     }
 
     function retrieveHtml(parsedJSON) {
-        var text = "<div class=\"container-fluid\"><div style=\"float:left;\" class=\"row\">";
+        var text = "<div class=\"container\"><div style=\"float:left;\" class=\"row\">";
         var url = "/api/rate?";
         for (var i = 0; i < parsedJSON.length; i++) {
             text +=
                     "<div class=\"col-xs-6\"> <div class=\"thumbnail\">"
-                    + "<img src=\"" + parsedJSON[i].imageUrl + "\" class=\"img-thumbnail\" > <div class=\"caption\">  " +
+                    + "<img style=\"height:100px\" src=\"" + parsedJSON[i].imageUrl + "\" class=\"img-thumbnail\" > <div class=\"caption\">  " +
                     "<div class=\"rating\">";
-            for (var j = 0; j < parsedJSON[i].rate; j++) {
-                text += "<span class=\"glyphicon glyphicon-star\"></span>";
+            if (parsedJSON[i].rate == 0) {
+                text += "<span class=\"bg-info\"> No rating yet</span>";
+            } else {
+                for (var j = 0; j < parsedJSON[i].rate; j++) {
+                    text += "<span class=\"glyphicon glyphicon-star\"></span>";
+                }
             }
             text += "</div><div class=\"rating-api\">";
             for (var j = 0; j < 5; j++) {
@@ -97,6 +95,7 @@
             if (this.readyState == 4 && this.status == 200) {
                 var parsedJSON = JSON.parse(this.responseText);
                 document.getElementById("json").innerHTML = retrieveHtml(parsedJSON);
+                recentPopularOrNone = "recent";
             }
         };
         xhttp.open("GET", "http://localhost:8080/api/recent", true);
@@ -104,11 +103,22 @@
     }
 
     function rate(id, score) {
+
+        if (recentPopularOrNone = "recent") {
+            rateWithCallBack(id, score, recent);
+        } else {
+            rateWithCallBack(id, score, popular);
+        }
+    }
+
+    function rateWithCallBack(id, score, callback) {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 document.getElementById("result").innerHTML =
-                        "diag " + id + " rated with score " + score;
+                        "Debug: " + id + " rated " + score;
+                callback();
+
             }
         };
         xhttp.open("GET", "http://localhost:8080/api/rate?diagId=" + id + "&score=" + score, true);
@@ -121,6 +131,7 @@
             if (this.readyState == 4 && this.status == 200) {
                 var parsedJSON = JSON.parse(this.responseText);
                 document.getElementById("json").innerHTML = retrieveHtml(parsedJSON);
+                recentPopularOrNone = "popular";
             }
         };
         xhttp.open("GET", "http://localhost:8080/api/popular", true);
@@ -130,6 +141,11 @@
 
 </script>
 <div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <h1 style=" text-align: center;" class="row bg-success">Comunity Diagram Template Rating</h1>
+        </div>
+    </div>
     <div class="row">
         <div class="btn-toolbar">
             <div class="btn-group">
@@ -144,13 +160,19 @@
             </div>
         </div>
     </div>
-    <div class="result">
-        <div class="col-md-4"></div>
+    <div class="row">
+        <div class="col-md-8">
+            <div  style="margin:10px;" id="result" class="col-md-4 bg-warning"></div>
+        </div>
+    </div>
+    <div class="row">
+
+        <div id="json" class="col-md-8">
+        </div>
+
     </div>
 </div>
 
-<div id="json">
-</div>
 
 </body>
 </html>
