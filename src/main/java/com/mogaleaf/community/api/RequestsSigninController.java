@@ -23,9 +23,6 @@ public class RequestsSigninController {
 
     /**
      * Sign a user in requesting auhtorisation to retrieve diagrams.
-     *
-     * @param request
-     * @param response
      */
     @RequestMapping("/signin")
     public void newUser(HttpServletRequest request, HttpServletResponse response) {
@@ -40,12 +37,6 @@ public class RequestsSigninController {
 
     /**
      * Call back to retrieve the temp token from oauth.
-     *
-     * @param request
-     * @param response
-     * @param oauth_token
-     * @param verifier
-     * @return
      */
     @RequestMapping("/signin/callback")
     public String callBack(HttpServletRequest request, HttpServletResponse response, @RequestParam("oauth_token") String oauth_token, @RequestParam("oauth_verifier") String verifier) {

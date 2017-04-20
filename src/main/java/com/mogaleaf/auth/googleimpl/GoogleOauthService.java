@@ -23,11 +23,6 @@ public class GoogleOauthService implements OAuthService {
 
     /**
      * Temp token.
-     *
-     * @param urlRequestTempToken
-     * @param callBack
-     * @return
-     * @throws IOException
      */
     @Override
     public UserToken retrieveTempToken(String urlRequestTempToken, String callBack) throws IOException {
@@ -43,12 +38,6 @@ public class GoogleOauthService implements OAuthService {
 
     /**
      * Full token
-     *
-     * @param urlAccessToken
-     * @param tempToken
-     * @param verify
-     * @return
-     * @throws IOException
      */
     @Override
     public UserToken retrieveToken(String urlAccessToken, UserToken tempToken, String verify) throws IOException {

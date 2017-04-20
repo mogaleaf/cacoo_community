@@ -37,9 +37,6 @@ public class RedisClient implements DatabaseService {
 
     /**
      * Register credential in Redis.
-     *
-     * @param name
-     * @param userToken
      */
     @Override
     public void registerCredential(String name, UserToken userToken) {
@@ -59,9 +56,6 @@ public class RedisClient implements DatabaseService {
 
     /**
      * Retrieve UserToken from redis.
-     *
-     * @param name
-     * @return
      */
     @Override
     public UserToken retrieveCredential(String name) {
@@ -89,8 +83,6 @@ public class RedisClient implements DatabaseService {
 
     /**
      * Use script to add a diagram so its thread safe.
-     *
-     * @param retrieveDiags
      */
     @Override
     public void addDiagrams(List<Diagram> retrieveDiags) {

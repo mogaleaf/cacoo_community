@@ -28,11 +28,6 @@ public class RequestsImportController {
 
     /**
      * Import template diagrams from a user who must have authorized the application on cacoo.
-     *
-     * @param request
-     * @param response
-     * @param sessionId
-     * @return
      */
     @RequestMapping("/user/import")
     public String importDiagrams(HttpServletRequest request, HttpServletResponse response, @CookieValue(value = "sessionId", defaultValue = "none") String sessionId) {

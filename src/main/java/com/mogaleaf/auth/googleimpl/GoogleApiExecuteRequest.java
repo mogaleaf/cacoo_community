@@ -27,10 +27,6 @@ public class GoogleApiExecuteRequest implements ExecuteRequest {
 
     /**
      * Sign the request to contact cacoo api.
-     *
-     * @param url
-     * @return
-     * @throws IOException
      */
     @Override
     public InputStream executeRequest(String url) throws IOException {

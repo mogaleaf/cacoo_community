@@ -30,10 +30,6 @@ public class TokenService {
 
     /**
      * Url to authorize token
-     *
-     * @param callBackUrl
-     * @return
-     * @throws IOException
      */
     public String getAuthentificationUrl(String callBackUrl) throws IOException {
         UserToken userToken = oAuthService.retrieveTempToken(PropertieHelper.urlProperties.getProperty("request"), callBackUrl);
@@ -43,11 +39,6 @@ public class TokenService {
 
     /**
      * With the tempory access token retrieve a full operational token
-     *
-     * @param token
-     * @param verif
-     * @return
-     * @throws IOException
      */
     public String requestAndRegisterToken(String token, String verif) throws IOException {
         UserToken userToken = databaseService.retrieveCredential(token);
