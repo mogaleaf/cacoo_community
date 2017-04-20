@@ -12,20 +12,18 @@ public class OAuthBuilder {
 
     protected OAuthHmacSigner oAuthHmacSigner = new OAuthHmacSigner();
     protected HttpTransport netHttpTransport;
-    protected static String consumerKey = PropertieHelper.appProperties.getProperty("ConsumerKey");
+    protected static String consumerKey = System.getenv("ConsumerKey");
     static{
-       if(consumerKey == null || consumerKey.equals("To put")){
-           //Heroku
-           consumerKey = System.getenv("ConsumerKey");
+       if(consumerKey == null){
+           consumerKey = PropertieHelper.appProperties.getProperty("ConsumerKey");
        }
     }
 
     public OAuthBuilder(Transport transport) {
         netHttpTransport = transport.getHttpTransport();
-        oAuthHmacSigner.clientSharedSecret = PropertieHelper.appProperties.getProperty("ConsumerSecret");
-        if(oAuthHmacSigner.clientSharedSecret == null || oAuthHmacSigner.clientSharedSecret.equals("To put")){
-            //Heroku
-            consumerKey = System.getenv("ConsumerSecret");
+        oAuthHmacSigner.clientSharedSecret = System.getenv("ConsumerSecret");
+        if(oAuthHmacSigner.clientSharedSecret == null){
+            oAuthHmacSigner.clientSharedSecret = PropertieHelper.appProperties.getProperty("ConsumerSecret");
         }
     }
 }
