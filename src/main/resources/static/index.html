@@ -25,9 +25,7 @@
 
     function checkCookie() {
         var myCookie = document.cookie.indexOf('sessionId=');
-
         if (myCookie != -1) {
-
             document.getElementById("cookie").innerHTML = "<a  class=\"btn btn-primary\" href='javascript:completeAndRedirect();'>Import</a>";
         }
         else {
@@ -46,20 +44,16 @@
     }
 
     function completeAndRedirect() {
-
-        var req = 'http://localhost:8080/user/import';
+        var req = '/user/import';
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-
-
                 document.getElementById("result").innerHTML =
                         this.responseText;
             }
         };
         xhttp.open("GET", req, true);
         xhttp.send();
-
     }
 
     function retrieveHtml(parsedJSON) {
@@ -98,7 +92,7 @@
                 recentPopularOrNone = "recent";
             }
         };
-        xhttp.open("GET", "http://localhost:8080/api/recent", true);
+        xhttp.open("GET", "/api/recent", true);
         xhttp.send();
     }
 
@@ -121,7 +115,7 @@
 
             }
         };
-        xhttp.open("GET", "http://localhost:8080/api/rate?diagId=" + id + "&score=" + score, true);
+        xhttp.open("GET", "/api/rate?diagId=" + id + "&score=" + score, true);
         xhttp.send();
     }
 
@@ -134,7 +128,7 @@
                 recentPopularOrNone = "popular";
             }
         };
-        xhttp.open("GET", "http://localhost:8080/api/popular", true);
+        xhttp.open("GET", "/api/popular", true);
         xhttp.send();
     }
 
@@ -149,7 +143,7 @@
     <div class="row">
         <div class="btn-toolbar">
             <div class="btn-group">
-                <div class="col-md-4"><a class="btn btn-primary" href="http://localhost:8080/signin">Signin</a></div>
+                <div class="col-md-4"><a class="btn btn-primary" href="/signin">Signin</a></div>
                 <div class="col-md-4" id="cookie"></div>
             </div>
             <div class="row">
