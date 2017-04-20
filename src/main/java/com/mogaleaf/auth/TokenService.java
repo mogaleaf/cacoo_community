@@ -20,23 +20,38 @@ public class TokenService {
     @Autowired
     private DatabaseService databaseService;
 
-    public boolean loggedUser(String name){
-        return  !(name == null || name.isEmpty()) && databaseService.logUser(name);
+    public boolean loggedUser(String name) {
+        return !(name == null || name.isEmpty()) && databaseService.logUser(name);
     }
 
-    public boolean currentLoggingUser(String email){
+    public boolean currentLoggingUser(String email) {
         return !(email == null || email.isEmpty()) && databaseService.curLogUser(email);
     }
 
+    /**
+     * Url to authorize token
+     *
+     * @param callBackUrl
+     * @return
+     * @throws IOException
+     */
     public String getAuthentificationUrl(String callBackUrl) throws IOException {
-        UserToken userToken = oAuthService.retrieveTempToken(PropertieHelper.urlProperties.getProperty("request"),callBackUrl);
+        UserToken userToken = oAuthService.retrieveTempToken(PropertieHelper.urlProperties.getProperty("request"), callBackUrl);
         databaseService.registerCredential(userToken.token, userToken);
         return oAuthService.retrieveAuthorizeUrl(PropertieHelper.urlProperties.getProperty("authorize"), userToken);
     }
 
+    /**
+     * With the tempory access token retrieve a full operational token
+     *
+     * @param token
+     * @param verif
+     * @return
+     * @throws IOException
+     */
     public String requestAndRegisterToken(String token, String verif) throws IOException {
         UserToken userToken = databaseService.retrieveCredential(token);
-        userToken = oAuthService.retrieveToken(PropertieHelper.urlProperties.getProperty("access"),userToken,verif);
+        userToken = oAuthService.retrieveToken(PropertieHelper.urlProperties.getProperty("access"), userToken, verif);
         String sessionId = generator.generateSessionId();
         databaseService.registerCredential(sessionId, userToken);
         return sessionId;

@@ -7,14 +7,17 @@ import com.mogaleaf.auth.UserToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * Define the transport to use.
+ */
 @Service
-public class GoogleRequestService implements RequestService{
+public class GoogleRequestService implements RequestService {
 
     @Autowired
     Transport transport;
 
     @Override
     public ExecuteRequest getService(UserToken token) {
-        return new GoogleApiExecuteRequest(transport,token);
+        return new GoogleApiExecuteRequest(transport, token);
     }
 }

@@ -14,7 +14,7 @@ import java.io.InputStream;
 
 public class GoogleApiExecuteRequest implements ExecuteRequest {
 
-    OAuthBuilder oAuthBuilder ;
+    OAuthBuilder oAuthBuilder;
     OAuthParameters parameters = new OAuthParameters();
 
     public GoogleApiExecuteRequest(Transport transport, UserToken userToken) {
@@ -25,7 +25,13 @@ public class GoogleApiExecuteRequest implements ExecuteRequest {
         oAuthBuilder.oAuthHmacSigner.tokenSharedSecret = userToken.tokenSecret;
     }
 
-
+    /**
+     * Sign the request to contact cacoo api.
+     *
+     * @param url
+     * @return
+     * @throws IOException
+     */
     @Override
     public InputStream executeRequest(String url) throws IOException {
         HttpRequestFactory requestFactory = oAuthBuilder.netHttpTransport.createRequestFactory(parameters);

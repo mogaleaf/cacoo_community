@@ -21,6 +21,11 @@ public class RequestsAppliController {
 
     static Logger logger = LoggerFactory.getLogger(RequestsAppliController.class);
 
+    /**
+     * Rate a diagram with a score from 0 to 5.
+     * @param diagId
+     * @param score
+     */
     @RequestMapping("/api/rate")
     public void rate(@RequestParam("diagId") String diagId, @RequestParam(value = "score", defaultValue = "0") String score) {
         if(diagId == null || diagId.isEmpty()){
@@ -37,6 +42,11 @@ public class RequestsAppliController {
     }
 
 
+    /**
+     * Get the most popular diagrams in term of score.
+     * @param max
+     * @return
+     */
     @RequestMapping("/api/popular")
     @ResponseBody
     public List<Diagram> popular(@RequestParam(value = "max" , defaultValue = "10") String max) {
@@ -54,7 +64,11 @@ public class RequestsAppliController {
         }
     }
 
-
+    /**
+     * Get the most recent diagrams.
+     * @param max
+     * @return
+     */
     @RequestMapping("/api/recent")
     @ResponseBody
     public List<Diagram> recent(@RequestParam(value = "max", defaultValue = "10") String max) {

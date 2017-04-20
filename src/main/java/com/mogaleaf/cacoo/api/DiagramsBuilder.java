@@ -13,6 +13,10 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Builder a request to Diagrams list.
+ * execute the request with build()
+ */
 public class DiagramsBuilder {
     String offset = "offset";
     String limit = "limit";

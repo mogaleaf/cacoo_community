@@ -35,6 +35,12 @@ public class RedisClient implements DatabaseService {
         sha1RateDiagram = client.scriptLoad(RedisScript.RATE_DIAGRAM);
     }
 
+    /**
+     * Register credential in Redis.
+     *
+     * @param name
+     * @param userToken
+     */
     @Override
     public void registerCredential(String name, UserToken userToken) {
         String key;
@@ -51,6 +57,12 @@ public class RedisClient implements DatabaseService {
 
     }
 
+    /**
+     * Retrieve UserToken from redis.
+     *
+     * @param name
+     * @return
+     */
     @Override
     public UserToken retrieveCredential(String name) {
         String tokenString = null;
@@ -75,6 +87,11 @@ public class RedisClient implements DatabaseService {
         return client.exists(name + CUR_LOG_PATTERN);
     }
 
+    /**
+     * Use script to add a diagram so its thread safe.
+     *
+     * @param retrieveDiags
+     */
     @Override
     public void addDiagrams(List<Diagram> retrieveDiags) {
         retrieveDiags.forEach(retrieveDiag -> {
@@ -96,6 +113,12 @@ public class RedisClient implements DatabaseService {
         return retriveDiagsFromJson(lrange);
     }
 
+    /**
+     * Use script to rate a diagram so its thread safe.
+     *
+     * @param diagId
+     * @param score
+     */
     @Override
     public void rate(String diagId, int score) {
         client.evalsha(sha1RateDiagram, 2, DIAGRAM_NB_RATE_KEY, DIAGRAM_RATE_KEY, diagId, String.valueOf(score));

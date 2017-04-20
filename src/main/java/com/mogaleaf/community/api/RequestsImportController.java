@@ -6,7 +6,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,11 +26,18 @@ public class RequestsImportController {
 
     static Logger logger = LoggerFactory.getLogger(RequestsImportController.class);
 
-
+    /**
+     * Import template diagrams from a user who must have authorized the application on cacoo.
+     *
+     * @param request
+     * @param response
+     * @param sessionId
+     * @return
+     */
     @RequestMapping("/user/import")
-    public String importDiagrams(HttpServletRequest request, HttpServletResponse response, @CookieValue(value = "sessionId" ,defaultValue = "none") String sessionId) {
+    public String importDiagrams(HttpServletRequest request, HttpServletResponse response, @CookieValue(value = "sessionId", defaultValue = "none") String sessionId) {
         logger.debug("[User import]");
-        if(sessionId == null || sessionId.isEmpty() ){
+        if (sessionId == null || sessionId.isEmpty()) {
             throw new IllegalArgumentException("sessionId not present, please log fisrt");
         }
         try {
@@ -45,6 +55,6 @@ public class RequestsImportController {
 
     @ExceptionHandler
     void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
-        response.sendError(HttpStatus.BAD_REQUEST.value(),e.getMessage());
+        response.sendError(HttpStatus.BAD_REQUEST.value(), e.getMessage());
     }
 }

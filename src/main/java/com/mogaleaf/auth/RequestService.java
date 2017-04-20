@@ -5,7 +5,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.concurrent.ExecutorService;
 
-
+/**
+ * Get the service to execute the request.
+ */
 public interface RequestService {
 
     public ExecuteRequest getService(UserToken token);

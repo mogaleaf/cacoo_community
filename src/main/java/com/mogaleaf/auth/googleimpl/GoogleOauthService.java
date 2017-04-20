@@ -12,14 +12,25 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
+/**
+ * Use google api to retrieve Oauth token.
+ */
 @Service
 public class GoogleOauthService implements OAuthService {
 
     @Autowired
     private Transport transport;
 
+    /**
+     * Temp token.
+     *
+     * @param urlRequestTempToken
+     * @param callBack
+     * @return
+     * @throws IOException
+     */
     @Override
-    public UserToken retrieveTempToken(String urlRequestTempToken,String callBack) throws IOException {
+    public UserToken retrieveTempToken(String urlRequestTempToken, String callBack) throws IOException {
         OAuthBuilder oAuthBuilder = new OAuthBuilder(transport);
         OAuthGetTemporaryToken getToken = new OAuthGetTemporaryToken("https://cacoo.com/oauth/request_token");
         getToken.callback = callBack;
@@ -27,11 +38,20 @@ public class GoogleOauthService implements OAuthService {
         getToken.signer = oAuthBuilder.oAuthHmacSigner;
         getToken.consumerKey = oAuthBuilder.consumerKey;
         OAuthCredentialsResponse execute = getToken.execute();
-        return buildUserToken(execute.token,execute.tokenSecret,true);
+        return buildUserToken(execute.token, execute.tokenSecret, true);
     }
 
+    /**
+     * Full token
+     *
+     * @param urlAccessToken
+     * @param tempToken
+     * @param verify
+     * @return
+     * @throws IOException
+     */
     @Override
-    public UserToken retrieveToken(String urlAccessToken, UserToken tempToken,String verify) throws IOException {
+    public UserToken retrieveToken(String urlAccessToken, UserToken tempToken, String verify) throws IOException {
         OAuthBuilder oAuthBuilder = new OAuthBuilder(transport);
         OAuthGetAccessToken accessToken = new OAuthGetAccessToken(urlAccessToken);
         accessToken.temporaryToken = tempToken.token;
@@ -43,9 +63,16 @@ public class GoogleOauthService implements OAuthService {
         oAuthBuilder.oAuthHmacSigner.tokenSharedSecret = tempToken.tokenSecret;
         OAuthCredentialsResponse response = accessToken.execute();
 
-        return buildUserToken(response.token,response.tokenSecret,false);
+        return buildUserToken(response.token, response.tokenSecret, false);
     }
 
+    /**
+     * Authorize url.
+     *
+     * @param authUrl
+     * @param tempToken
+     * @return
+     */
     @Override
     public String retrieveAuthorizeUrl(String authUrl, UserToken tempToken) {
         OAuthAuthorizeTemporaryTokenUrl urlAuth = new OAuthAuthorizeTemporaryTokenUrl(authUrl);
@@ -53,7 +80,7 @@ public class GoogleOauthService implements OAuthService {
         return urlAuth.toURL().toString();
     }
 
-    private UserToken buildUserToken(String token,String tokenSecret,boolean temp) {
+    private UserToken buildUserToken(String token, String tokenSecret, boolean temp) {
         UserToken userToken = new UserToken();
         userToken.token = token;
         userToken.tokenSecret = tokenSecret;
