@@ -12,11 +12,12 @@ Everybody can see the most recent diagrams.
 
 ## Try It  
 
-Test the deployed version on Heroku [ here ](https://safe-mesa-68420.herokuapp.com/)
+Test the deployed version on Heroku [ here ](https://safe-mesa-68420.herokuapp.com/).  
+As the redis is embedded and heroku kills the app when not used, data are lost when the application is sleeping.
 
 ## Configuration of the Server
 
-* In src/java/resources Place your *ConsumerKey* and *ConsumerSecret*  
+* In src/java/resources Place your *ConsumerKey* and *ConsumerSecret*   or set System environment variable with the same name.
 ConsumerKey=To put  
 ConsumerSecret=To put
 
